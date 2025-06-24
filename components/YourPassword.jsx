@@ -47,16 +47,9 @@ export default function YourPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Password Manager
-          </h1>
-          <p className="text-slate-400">Securely manage your passwords</p>
-        </div>
-
-        <div className="space-y-4">
+        <div className="space-y-4 -mt-5">
           {passwords.length === 0 ? (
             <div className="text-center py-12 bg-slate-900/50 rounded-xl border border-slate-700">
               <div className="p-4 bg-green-500/10 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
@@ -143,14 +136,14 @@ export default function YourPassword() {
                       </a>
                     </div>
                   )}
-                  {password.notes && (
+                  {/* {password.notes && (
                     <div className="p-3 bg-slate-800/50 rounded-lg">
                       <span className="text-slate-400 block mb-1">Notes</span>
                       <span className="text-white text-sm">
                         {password.notes}
                       </span>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             ))

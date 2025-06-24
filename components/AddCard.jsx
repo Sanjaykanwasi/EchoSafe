@@ -1,9 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { CreditCard, Plus, Sparkles } from "lucide-react";
+import toast from "react-hot-toast";
+import { addCardServer } from "@/actions/actions";
+import { useUser } from "@clerk/nextjs";
 
 // AddCard Component
 export default function AddCard() {
+  const user = useUser();
+
   const [cardData, setCardData] = useState({
     cardName: "",
     cardNumber: "",
@@ -13,9 +18,8 @@ export default function AddCard() {
   });
 
   const handleSubmit = () => {
-    // Here you would typically save to your database via API
     console.log("Card data:", cardData);
-    // Reset form
+
     setCardData({
       cardName: "",
       cardNumber: "",
@@ -23,7 +27,7 @@ export default function AddCard() {
       cvv: "",
       cardholderName: "",
     });
-    alert("Card added successfully!");
+    toast.success("Card added successfully!");
   };
 
   return (

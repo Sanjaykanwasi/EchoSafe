@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Eye, EyeOff, Plus, Sparkles, Shield } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function AddPassword() {
   const [passwordData, setPasswordData] = useState({
@@ -33,7 +34,7 @@ export default function AddPassword() {
       website: "",
       notes: "",
     });
-    alert("Password added successfully!");
+    toast.success("Password added successfully!");
   };
 
   return (

@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { CreditCard, Plus, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
-import { addCardServer } from "@/actions/actions";
 import { useUser } from "@clerk/nextjs";
 
 // AddCard Component
@@ -17,17 +16,49 @@ export default function AddCard() {
     cardholderName: "",
   });
 
-  const handleSubmit = () => {
-    console.log("Card data:", cardData);
+  // const handleSubmit = () => {
+  //   console.log("Card data:", cardData);
 
-    setCardData({
-      cardName: "",
-      cardNumber: "",
-      expiryDate: "",
-      cvv: "",
-      cardholderName: "",
-    });
-    toast.success("Card added successfully!");
+  //   setCardData({
+  //     cardName: "",
+  //     cardNumber: "",
+  //     expiryDate: "",
+  //     cvv: "",
+  //     cardholderName: "",
+  //   });
+  //   toast.success("Card added successfully!");
+  // };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/add-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...cardData,
+          userId: user.user?.id, // added Clerk user ID here
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        toast.success("Card added successfully!");
+        setCardData({
+          cardName: "",
+          cardNumber: "",
+          expiryDate: "",
+          cvv: "",
+          cardholderName: "",
+        });
+      } else {
+        toast.error("Failed to save card: " + result.error);
+      }
+    } catch (err) {
+      toast.error("An error occurred while adding the card.");
+    }
   };
 
   return (

@@ -1,28 +1,45 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, CreditCard, Trash2, Copy } from "lucide-react";
 
 export default function YourCard() {
-  const [cards, setCards] = useState([
-    {
-      id: 1,
-      cardName: "Main Visa Card",
-      cardNumber: "4532 1234 5678 9012",
-      expiryDate: "12/26",
-      cardholderName: "John Doe",
-      lastFour: "9012",
-    },
-    {
-      id: 2,
-      cardName: "Business MasterCard",
-      cardNumber: "5555 6666 7777 8888",
-      expiryDate: "03/25",
-      cardholderName: "John Doe",
-      lastFour: "8888",
-    },
-  ]);
-
+  // const [cards, setCards] = useState([
+  //   {
+  //     id: 1,
+  //     cardName: "Main Visa Card",
+  //     cardNumber: "4532 1234 5678 9012",
+  //     expiryDate: "12/26",
+  //     cardholderName: "John Doe",
+  //     lastFour: "9012",
+  //   },
+  //   {
+  //     id: 2,
+  //     cardName: "Business MasterCard",
+  //     cardNumber: "5555 6666 7777 8888",
+  //     expiryDate: "03/25",
+  //     cardholderName: "John Doe",
+  //     lastFour: "8888",
+  //   },
+  // ]);
+  const [cards, setCards] = useState([]);
   const [showCardNumbers, setShowCardNumbers] = useState({});
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      const res = await fetch("/api/get-cards", {
+        method: "GET",
+        credentials: "include", // send session cookies
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCards(data.cards);
+      } else {
+        console.error("Failed to fetch cards:", data.error);
+      }
+    };
+
+    fetchCards();
+  }, []);
 
   const toggleCardVisibility = (cardId) => {
     setShowCardNumbers((prev) => ({
@@ -36,9 +53,32 @@ export default function YourCard() {
     alert("Copied to clipboard!");
   };
 
-  const deleteCard = (cardId) => {
-    if (confirm("Are you sure you want to delete this card?")) {
-      setCards(cards.filter((card) => card.id !== cardId));
+  // const deleteCard = (cardId) => {
+  //   if (confirm("Are you sure you want to delete this card?")) {
+  //     setCards(cards.filter((card) => card.id !== cardId));
+  //   }
+  // };
+  const deleteCard = async (cardId) => {
+    const confirmed = confirm("Are you sure you want to delete this card?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/delete-card?id=${cardId}`, {
+        method: "DELETE",
+        credentials: "include", // ✅ send session cookie
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        setCards((prev) => prev.filter((card) => card._id !== cardId));
+        alert("Card deleted successfully!");
+      } else {
+        alert("Failed to delete card: " + result.error);
+      }
+    } catch (error) {
+      alert("Error deleting card.");
+      console.error(error);
     }
   };
 
@@ -63,7 +103,7 @@ export default function YourCard() {
       ) : (
         cards.map((card) => (
           <div
-            key={card.id}
+            key={card._id}
             className="bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-xl shadow-xl border border-slate-700 backdrop-blur-sm hover:border-slate-600 transition-all duration-200"
           >
             <div className="flex justify-between items-start mb-4">
@@ -100,7 +140,7 @@ export default function YourCard() {
                   <Copy size={16} />
                 </button>
                 <button
-                  onClick={() => deleteCard(card.id)}
+                  onClick={() => deleteCard(card._id)}
                   className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                   title="Delete card"
                 >

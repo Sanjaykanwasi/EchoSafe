@@ -23,18 +23,47 @@ export default function AddPassword() {
     setPasswordData({ ...passwordData, password });
   };
 
-  const handleSubmit = () => {
-    // Here you would typically save to your database via API
-    console.log("Password data:", passwordData);
-    // Reset form
-    setPasswordData({
-      title: "",
-      username: "",
-      password: "",
-      website: "",
-      notes: "",
-    });
-    toast.success("Password added successfully!");
+  // const handleSubmit = () => {
+  //   // Here you would typically save to your database via API
+  //   console.log("Password data:", passwordData);
+  //   // Reset form
+  //   setPasswordData({
+  //     title: "",
+  //     username: "",
+  //     password: "",
+  //     website: "",
+  //     notes: "",
+  //   });
+  //   toast.success("Password added successfully!");
+  // };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/save-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // ✅ Required to pass Clerk session
+        body: JSON.stringify(passwordData),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        toast.success("Password added successfully!");
+        setPasswordData({
+          title: "",
+          username: "",
+          password: "",
+          website: "",
+          notes: "",
+        });
+      } else {
+        toast.error("Failed to add password: " + result.error);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred while saving password.");
+    }
   };
 
   return (

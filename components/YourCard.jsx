@@ -115,7 +115,7 @@ export default function YourCard() {
                   <h3 className="font-semibold text-lg text-white">
                     {card.cardName}
                   </h3>
-                  <p className="text-slate-400 text-sm">•••• {card.lastFour}</p>
+                  <p className="text-slate-400 text-sm"> {card.cvv}</p>
                 </div>
               </div>
               <div className="flex gap-2">
